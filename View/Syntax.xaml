@@ -1,0 +1,14 @@
+﻿<Window x:Class="ChocoVersionSelect.View.Syntax"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChocoVersionSelect"
+        Style="{StaticResource WindowStyle}"
+        mc:Ignorable="d" Height="210" Width="550" WindowStyle="ThreeDBorderWindow" ResizeMode="NoResize">
+    <StackPanel Margin="5">
+        <TextBlock x:Name="txtVersion" FontSize="32" Margin="5" />
+        <TextBox x:Name="txtSyntax" FontSize="16" Background="Black" Foreground="White" Padding="10" Margin="5" />
+        <Button HorizontalAlignment="Right" Content="OK" Click="Button_Click"/>
+    </StackPanel>
+</Window>

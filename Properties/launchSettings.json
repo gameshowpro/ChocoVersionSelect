@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "ChocoVersionSelect": {
+      "commandName": "Project",
+      "commandLineArgs": "Fremantle.FamilyFeud.Control --source=FamilyFeud"
+    },
+    "No args": {
+      "commandName": "Project"
+    },
+    "7-zip": {
+      "commandName": "Project",
+      "commandLineArgs": "7zip.install --source=chocolatey"
+    }
+  }
+}
