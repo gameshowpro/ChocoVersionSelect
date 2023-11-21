@@ -1,0 +1,63 @@
+jobs:
+
+  Build_WPF:
+    name: Build
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        ChannelName:
+        - Release
+
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_NOLOGO: true
+      BuildConfiguration: Release
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      ProjectPath: .\src\ChocoVersionSelect.csproj
+      PublishDir: .\src\bin\public\${{ env.BuildConfiguration }}
+
+    steps:
+
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Use .NET 8.0.x
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+        dotnet-quality: 'preview'
+
+    - name: Nerdbank.GitVersioning
+      uses: dotnet/nbgv@v0.4.1
+      with:
+        setCommonVars: true
+
+    - run: echo "BuildNumber - ${{ env.GitBuildVersionSimple }}"
+
+    - name: Create Directory for Channel
+      run: mkdir ${{ github.workspace }}\${{ matrix.ChannelName }}
+      shell: powershell
+
+    - name: Add Version File to Artifact
+      run : |
+        New-Item -Path ${{ github.workspace }}\Build -Name "version.txt" -ItemType "file" -Value "${{ env.GitBuildVersionSimple }}"
+        New-Item -Path ${{ github.workspace }}\${{ matrix.ChannelName }} -Name "version.txt" -ItemType "file" -Value "${{ env.GitBuildVersionSimple }}"
+      shell: powershell
+
+    - name: Build release ChocoVersionSelect
+      run: |
+        dotnet restore ${{ env.ProjectPath }}
+        dotnet publish ${{ env.ProjectPath }} -c ${{ env.BuildConfiguration }} --output ${{ env.PublishDir }}
+      if:  ${{ success() && matrix.ChannelName  == 'Release' }}
+
+    - name: Zip ChocoVersionSelect Files
+      run: |
+        Compress-Archive -Path '${{ env.PublishDir }}\*' `
+        -DestinationPath ${{ github.workspace }}\${{ matrix.ChannelName }}\ChocoVersionSelect.${{ env.GitBuildVersionSimple }}.zip
+      shell: powershell
+      if:  ${{ success() && matrix.ChannelName  == 'Release' }}
