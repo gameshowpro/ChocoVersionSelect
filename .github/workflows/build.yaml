@@ -25,7 +25,7 @@ jobs:
       BuildConfiguration: Release
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       ProjectPath: .\src\ChocoVersionSelect.csproj
-      PublishDir: .\src\bin\public\${{ env.BuildConfiguration }}
+      PublishDir: .\src\bin\public\Release
 
     steps:
 
