@@ -1,3 +1,10 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'version.json'
+
 jobs:
 
   Build_WPF:
