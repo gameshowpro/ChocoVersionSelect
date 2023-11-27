@@ -96,9 +96,9 @@ internal class ChocoWrapper
                 int versionEnd = line.IndexOf(' ', versionStart);
                 if (versionEnd == -1)
                 {
-                    versionEnd = line.Length - 1;
+                    versionEnd = line.Length;
                 }
-                pendingVersionNumber = line[versionStart..versionEnd];
+                pendingVersionNumber = line[versionStart..(versionEnd)];
             }
             else if (pendingVersionNumber != null)
             {

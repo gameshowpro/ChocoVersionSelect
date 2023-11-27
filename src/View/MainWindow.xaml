@@ -72,7 +72,7 @@
                 <TextBlock Text="." VerticalAlignment="Center" Visibility="{Binding Parts.Part3, Converter={StaticResource NotNullToVisibility}}" Grid.Column="6" Foreground="{DynamicResource TextBrush}"/>
                 <TextBlock Text="{Binding Parts.Part3}" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="7" Foreground="{DynamicResource TextBrush}"/>
                 <TextBlock Text="{Binding Age}" VerticalAlignment="Center" Margin="10 0 0 0" Grid.Column="8" Foreground="{DynamicResource TextBrush}"/>
-                <ContentControl Template="{StaticResource Spinner}" Grid.Column="8" Margin="10 0" Visibility="{Binding Age, Converter={StaticResource NullToVisibility}}" Foreground="{DynamicResource TextBrush}"/>
+                <ContentControl Template="{StaticResource Spinner}" ToolTip="Updating details" Grid.Column="8" Margin="10 0" Visibility="{Binding DataContext.IsRefreshing, ElementName=Window, Converter={StaticResource BooleanToVisibility}}" Foreground="{DynamicResource TextBrush}"/>
                 <Button Margin="10 0" Grid.Column="9" Command="{Binding DataContext.UpgradeCommand, ElementName=Window}" HorizontalAlignment="Right" CommandParameter="{Binding}">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
