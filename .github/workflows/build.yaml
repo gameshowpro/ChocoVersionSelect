@@ -28,7 +28,7 @@ jobs:
       PROJECT_PATH: .\src\ChocoVersionSelect.csproj
       PUBLISH_PATH: .\src\bin\public\Release
       ASSETS_PATH: .\build\chocolatey
-      NUSPEC_TARGET_PATH: ${{ format('{0}\{1}.nuspec', $PUBLISH_PATH, $PROJECT_NAME) }}
+      NUSPEC_TARGET_PATH: ${{ format('{0}\{1}.nuspec', env.PUBLISH_PATH, env.PROJECT_NAME) }}
 
     steps:
     - uses: actions/checkout@v4
@@ -85,3 +85,4 @@ jobs:
         }
         Copy-Item "$packageAssetsPath\*.ignore" $env.PUBLISH_PATH
         exit 0
+
