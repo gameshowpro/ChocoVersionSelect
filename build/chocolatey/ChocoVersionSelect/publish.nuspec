@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>chocoversionselect</id>
+    <version>{version}</version>
+    <title>ChocoVersionSelect</title>
+    <authors>Hamish Barjonas</authors>
+    <owners>Hamish Barjonas</owners>
+    <tags>Chocolatey Upgrade Downgrade</tags>
+    <summary>User-friendly application to allow easy upgrading and downgrading of a single package.</summary>
+    <description>ChocoVersionSelect Windows Desktop applicatioon</description>
+    <dependencies>
+      <dependency id="dotnet-8.0-desktopruntime" version="8.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="**" target="binaries" />
+  </files>
+</package>

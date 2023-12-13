@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  Build_WPF:
+  Build_And_Package:
     name: Build
     runs-on: windows-latest
     strategy:
@@ -24,12 +24,12 @@ jobs:
       DOTNET_NOLOGO: true
       BuildConfiguration: Release
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      ProjectPath: .\src\ChocoVersionSelect.csproj
-      PublishDir: .\src\bin\public\Release
+      PROJECT_NAME: ChocoVersionSelect
+      PROJECT_PATH: .\src\ChocoVersionSelect.csproj
+      PUBLISH_PATH: .\src\bin\public\Release
 
     steps:
-
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
@@ -60,13 +60,37 @@ jobs:
 
     - name: Build release ChocoVersionSelect
       run: |
-        dotnet restore ${{ env.ProjectPath }}
-        dotnet publish ${{ env.ProjectPath }} -c ${{ env.BuildConfiguration }} --output ${{ env.PublishDir }}
+        dotnet restore ${{ env.PROJECT_PATH }}
+        dotnet publish ${{ env.PROJECT_PATH }} -c ${{ env.BuildConfiguration }} --output ${{ env.PUBLISH_PATH }}
       if:  ${{ success() && matrix.ChannelName  == 'Release' }}
-
-    - name: Zip ChocoVersionSelect Files
+    
+    with: 
+          ASSETS_PATH: .\build\chocolatey
+          NUSPEC_TARGET_PATH: ${{ format('{0}\{1}.nuspec', $env.PUBLISH_PATH, $env.PROJECT_NAME) }}
+    - name: Gather chocolatey files
+      run:  |
+        $packageAssetsPath = Join-Path $env.INPUT_ASSETS_PATH $env.PROJECT_NAME
+        (Get-Content (Join-Path env.INPUT_ASSETS_PATH publish.nuspec)) `
+        -replace "{version}", $env.NBGV_SemVer1 `
+        -replace "{packageId}", $env.PROJECT_NAME |
+        Set-Content $env.INPUT_NUSPEC_TARGET_PATH
+        $toolsPath = Join-Path $env.PUBLISH_PATH tools
+        New-Item -Path $toolsPath -ItemType Directory
+        Get-ChildItem -Path $packageAssetsPath -File -Filter *.ps1 |
+        ForEach-Object { `
+          (Get-Content $_.FullName) `
+            -replace "{version}", $env.NBGV_SemVer1 `
+            -replace "{packageId}", $env.PROJECT_NAME |
+            Set-Content (Join-Path $toolsPath $_.Name) `
+        }
+        Copy-Item "$packageAssetsPath\*.ignore" $env.PUBLISH_PATH
+    - name: Pack
       run: |
-        Compress-Archive -Path '${{ env.PublishDir }}\*' `
-        -DestinationPath ${{ github.workspace }}\${{ matrix.ChannelName }}\ChocoVersionSelect.${{ env.GitBuildVersionSimple }}.zip
-      shell: powershell
-      if:  ${{ success() && matrix.ChannelName  == 'Release' }}
+        $nupkgOutputPath = .\packages
+        New-Item -Path $nupkgOutputPath -ItemType Directory
+        choco pack $env.INPUT_NUSPEC_TARGET_PATH --version $env.NBGV_SemVer1 --outputdirectory $nupkgOutputPath
+    - name: Upload
+      - uses: actions/upload-artifact@v3
+        with:
+          name: chocolatey-package
+          path: \*.nupkg

@@ -1,0 +1,1 @@
+﻿Get-Process -Name "ChocoVersionSelect" -ErrorAction Ignore | Foreach-Object { $_.CloseMainWindow() | Out-Null }
