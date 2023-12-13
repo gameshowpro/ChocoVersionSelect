@@ -85,17 +85,3 @@ jobs:
         }
         Copy-Item "$packageAssetsPath\*.ignore" $env.PUBLISH_PATH
         exit 0
-
-    - name: Pack
-      shell: pwsh
-      run: |
-        $nupkgOutputPath = .\packages
-        New-Item -Path $nupkgOutputPath -ItemType Directory
-        choco pack $env.NUSPEC_TARGET_PATH --version $env.NBGV_SemVer1 --outputdirectory $nupkgOutputPath
-        exit $?
-
-    - name: Upload
-      - uses: actions/upload-artifact@v3
-        with:
-          name: chocolatey-package
-          path: \*.nupkg
