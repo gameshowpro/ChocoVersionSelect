@@ -11,8 +11,10 @@ on:
 jobs:
 
   Build_And_Package:
-    name: Build
+    name: Build and package
     runs-on: windows-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         ChannelName:
@@ -27,6 +29,9 @@ jobs:
       PROJECT_NAME: ChocoVersionSelect
       PROJECT_PATH: .\src\ChocoVersionSelect.csproj
       PUBLISH_PATH: .\src\bin\public\Release
+      ASSETS_PATH: .\build\chocolatey\ChocoVersionSelect
+      NUSPEC_TARGET_PATH: .\src\bin\public\Release\ChocoVersionSelect.nuspec
+      NUPKG_TARGET_PATH: ./packages
 
     steps:
     - uses: actions/checkout@v4
@@ -40,57 +45,69 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0.x'
-        dotnet-quality: 'preview'
+        dotnet-quality: 'ga'
 
     - name: Nerdbank.GitVersioning
       uses: dotnet/nbgv@v0.4.1
       with:
-        setCommonVars: true
-
-    - run: echo "BuildNumber - ${{ env.GitBuildVersionSimple }}"
+        setAllVars: true
 
     - name: Create Directory for Channel
+      shell: pwsh
       run: mkdir ${{ github.workspace }}\${{ matrix.ChannelName }}
-      shell: powershell
 
     - name: Add Version File to Artifact
+      shell: pwsh
       run : |
-        New-Item -Path ${{ github.workspace }}\${{ matrix.ChannelName }} -Name "version.txt" -ItemType "file" -Value "${{ env.GitBuildVersionSimple }}"
-      shell: powershell
+        New-Item -Path ${{ github.workspace }}\${{ matrix.ChannelName }} -Name 'version.txt' -ItemType 'file' -Value "$env:GitBuildVersionSimple"
 
     - name: Build release ChocoVersionSelect
       run: |
-        dotnet restore ${{ env.PROJECT_PATH }}
-        dotnet publish ${{ env.PROJECT_PATH }} -c ${{ env.BuildConfiguration }} --output ${{ env.PUBLISH_PATH }}
+        dotnet restore $env:PROJECT_PATH
+        dotnet publish $env:PROJECT_PATH -c $env:BuildConfiguration --output $env:PUBLISH_PATH
       if:  ${{ success() && matrix.ChannelName  == 'Release' }}
     
-    with: 
-          ASSETS_PATH: .\build\chocolatey
-          NUSPEC_TARGET_PATH: ${{ format('{0}\{1}.nuspec', $env.PUBLISH_PATH, $env.PROJECT_NAME) }}
     - name: Gather chocolatey files
-      run:  |
-        $packageAssetsPath = Join-Path $env.INPUT_ASSETS_PATH $env.PROJECT_NAME
-        (Get-Content (Join-Path env.INPUT_ASSETS_PATH publish.nuspec)) `
-        -replace "{version}", $env.NBGV_SemVer1 `
-        -replace "{packageId}", $env.PROJECT_NAME |
-        Set-Content $env.INPUT_NUSPEC_TARGET_PATH
-        $toolsPath = Join-Path $env.PUBLISH_PATH tools
+      shell: pwsh
+      run: |
+        (Get-Content (Join-Path $env:ASSETS_PATH 'publish.nuspec')) `
+        -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
+        -replace "{packageId}", $env:PROJECT_NAME |
+        Set-Content $env:NUSPEC_TARGET_PATH
+        $toolsPath = Join-Path $env:PUBLISH_PATH 'tools'
         New-Item -Path $toolsPath -ItemType Directory
-        Get-ChildItem -Path $packageAssetsPath -File -Filter *.ps1 |
+        Get-ChildItem -Path $env:ASSETS_PATH -File -Filter *.ps1 |
         ForEach-Object { `
           (Get-Content $_.FullName) `
-            -replace "{version}", $env.NBGV_SemVer1 `
-            -replace "{packageId}", $env.PROJECT_NAME |
+            -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
+            -replace "{packageId}", $env:PROJECT_NAME |
             Set-Content (Join-Path $toolsPath $_.Name) `
         }
-        Copy-Item "$packageAssetsPath\*.ignore" $env.PUBLISH_PATH
+        Copy-Item "$env:ASSETS_PATH\*.ignore" $env:PUBLISH_PATH
+        exit 0
+
     - name: Pack
+      shell: pwsh
       run: |
-        $nupkgOutputPath = .\packages
-        New-Item -Path $nupkgOutputPath -ItemType Directory
-        choco pack $env.INPUT_NUSPEC_TARGET_PATH --version $env.NBGV_SemVer1 --outputdirectory $nupkgOutputPath
+        New-Item -Path $env:NUPKG_TARGET_PATH -ItemType Directory
+        choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH
+        exit ($? ? 0 : 1)
+
     - name: Upload
-      - uses: actions/upload-artifact@v3
-        with:
-          name: chocolatey-package
-          path: \*.nupkg
+      uses: actions/upload-artifact@v3
+      with:
+        name: chocolatey-package
+        path: ${{ env.NUPKG_TARGET_PATH }}/*.nupkg
+
+    - name: Add tags
+      id: addTags
+      shell: pwsh
+      run: |
+        nbgv tag 
+        git push origin "v$env:NBGV_ChocolateyPackageVersion"
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ env.NBGV_ChocolateyPackageVersion }}
+        files: ${{ env.NUPKG_TARGET_PATH }}/*.nupkg
