@@ -49,7 +49,7 @@ jobs:
       with:
         setCommonVars: true
 
-    - run: echo "BuildNumber - ${{ env.GitBuildVersionSimple }}"
+    - run: echo "BuildNumber - $env:GitBuildVersionSimple"
 
     - name: Create Directory for Channel
       shell: pwsh
@@ -58,31 +58,31 @@ jobs:
     - name: Add Version File to Artifact
       shell: pwsh
       run : |
-        New-Item -Path ${{ github.workspace }}\${{ matrix.ChannelName }} -Name 'version.txt' -ItemType 'file' -Value "${{ env.GitBuildVersionSimple }}"
+        New-Item -Path ${{ github.workspace }}\${{ matrix.ChannelName }} -Name 'version.txt' -ItemType 'file' -Value "$env:GitBuildVersionSimple"
 
     - name: Build release ChocoVersionSelect
       run: |
-        dotnet restore ${{ env.PROJECT_PATH }}
-        dotnet publish ${{ env.PROJECT_PATH }} -c ${{ env.BuildConfiguration }} --output ${{ env.PUBLISH_PATH }}
+        dotnet restore $env:PROJECT_PATH
+        dotnet publish $env:PROJECT_PATH -c $env:BuildConfiguration --output $env:PUBLISH_PATH
       if:  ${{ success() && matrix.ChannelName  == 'Release' }}
     
     - name: Gather chocolatey files
       shell: pwsh
       run: |
-        (Get-Content (Join-Path $env.ASSETS_PATH 'publish.nuspec')) `
-        -replace "{version}", $env.NBGV_SemVer1 `
-        -replace "{packageId}", $env.PROJECT_NAME |
-        Set-Content $env.NUSPEC_TARGET_PATH
-        $toolsPath = Join-Path $env.PUBLISH_PATH 'tools'
+        (Get-Content (Join-Path $env:ASSETS_PATH 'publish.nuspec')) `
+        -replace "{version}", $env:NBGV_SemVer1 `
+        -replace "{packageId}", $env:PROJECT_NAME |
+        Set-Content $env:NUSPEC_TARGET_PATH
+        $toolsPath = Join-Path $env:PUBLISH_PATH 'tools'
         New-Item -Path $toolsPath -ItemType Directory
         Get-ChildItem -Path $packageAssetsPath -File -Filter *.ps1 |
         ForEach-Object { `
           (Get-Content $_.FullName) `
-            -replace "{version}", $env.NBGV_SemVer1 `
-            -replace "{packageId}", $env.PROJECT_NAME |
+            -replace "{version}", $env:NBGV_SemVer1 `
+            -replace "{packageId}", $env:PROJECT_NAME |
             Set-Content (Join-Path $toolsPath $_.Name) `
         }
-        Copy-Item "$packageAssetsPath\*.ignore" $env.PUBLISH_PATH
+        Copy-Item "$packageAssetsPath\*.ignore" $env:PUBLISH_PATH
         exit 0
 
     - name: Pack
@@ -90,7 +90,7 @@ jobs:
       run: |
         $nupkgOutputPath = '.\packages'
         New-Item -Path $nupkgOutputPath -ItemType Directory
-        choco pack $env.NUSPEC_TARGET_PATH --version $env.NBGV_SemVer1 --outputdirectory $nupkgOutputPath
+        choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_SemVer1 --outputdirectory $nupkgOutputPath
         exit $?
 
     - name: Upload
