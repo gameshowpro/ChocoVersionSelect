@@ -52,13 +52,13 @@ jobs:
     - run: echo "BuildNumber - ${{ env.GitBuildVersionSimple }}"
 
     - name: Create Directory for Channel
+      shell: pwsh
       run: mkdir ${{ github.workspace }}\${{ matrix.ChannelName }}
-      shell: powershell
 
     - name: Add Version File to Artifact
+      shell: pwsh
       run : |
         New-Item -Path ${{ github.workspace }}\${{ matrix.ChannelName }} -Name "version.txt" -ItemType "file" -Value "${{ env.GitBuildVersionSimple }}"
-      shell: powershell
 
     - name: Build release ChocoVersionSelect
       run: |
@@ -67,12 +67,13 @@ jobs:
       if:  ${{ success() && matrix.ChannelName  == 'Release' }}
     
     - name: Gather chocolatey files
-      run:  |
-        $packageAssetsPath = Join-Path $env.INPUT_ASSETS_PATH $env.PROJECT_NAME
-        (Get-Content (Join-Path env.INPUT_ASSETS_PATH publish.nuspec)) `
+      shell: pwsh
+      run: |
+        $packageAssetsPath = Join-Path $env.ASSETS_PATH $env.PROJECT_NAME
+        (Get-Content (Join-Path env.ASSETS_PATH publish.nuspec)) `
         -replace "{version}", $env.NBGV_SemVer1 `
         -replace "{packageId}", $env.PROJECT_NAME |
-        Set-Content $env.INPUT_NUSPEC_TARGET_PATH
+        Set-Content $env.NUSPEC_TARGET_PATH
         $toolsPath = Join-Path $env.PUBLISH_PATH tools
         New-Item -Path $toolsPath -ItemType Directory
         Get-ChildItem -Path $packageAssetsPath -File -Filter *.ps1 |
@@ -83,11 +84,15 @@ jobs:
             Set-Content (Join-Path $toolsPath $_.Name) `
         }
         Copy-Item "$packageAssetsPath\*.ignore" $env.PUBLISH_PATH
+        exit 0
+
     - name: Pack
+      shell: pwsh
       run: |
         $nupkgOutputPath = .\packages
         New-Item -Path $nupkgOutputPath -ItemType Directory
-        choco pack $env.INPUT_NUSPEC_TARGET_PATH --version $env.NBGV_SemVer1 --outputdirectory $nupkgOutputPath
+        choco pack $env.NUSPEC_TARGET_PATH --version $env.NBGV_SemVer1 --outputdirectory $nupkgOutputPath
+
     - name: Upload
       - uses: actions/upload-artifact@v3
         with:
