@@ -9,9 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-
   Build_And_Package:
-    name: Build
+    name: Build and package
     runs-on: windows-latest
     strategy:
       matrix:
