@@ -9,6 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
+
   Build_And_Package:
     name: Build and package
     runs-on: windows-latest
@@ -26,6 +27,8 @@ jobs:
       PROJECT_NAME: ChocoVersionSelect
       PROJECT_PATH: .\src\ChocoVersionSelect.csproj
       PUBLISH_PATH: .\src\bin\public\Release
+      ASSETS_PATH: .\build\chocolatey
+      NUSPEC_TARGET_PATH: ${{ format('{0}\{1}.nuspec', $env.PUBLISH_PATH, $env.PROJECT_NAME) }}
 
     steps:
     - uses: actions/checkout@v4
@@ -63,9 +66,6 @@ jobs:
         dotnet publish ${{ env.PROJECT_PATH }} -c ${{ env.BuildConfiguration }} --output ${{ env.PUBLISH_PATH }}
       if:  ${{ success() && matrix.ChannelName  == 'Release' }}
     
-    with: 
-          ASSETS_PATH: .\build\chocolatey
-          NUSPEC_TARGET_PATH: ${{ format('{0}\{1}.nuspec', $env.PUBLISH_PATH, $env.PROJECT_NAME) }}
     - name: Gather chocolatey files
       run:  |
         $packageAssetsPath = Join-Path $env.INPUT_ASSETS_PATH $env.PROJECT_NAME
