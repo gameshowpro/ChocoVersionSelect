@@ -92,6 +92,7 @@ jobs:
         $nupkgOutputPath = .\packages
         New-Item -Path $nupkgOutputPath -ItemType Directory
         choco pack $env.NUSPEC_TARGET_PATH --version $env.NBGV_SemVer1 --outputdirectory $nupkgOutputPath
+        exit $?
 
     - name: Upload
       - uses: actions/upload-artifact@v3
