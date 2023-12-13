@@ -27,7 +27,7 @@ jobs:
       PROJECT_NAME: ChocoVersionSelect
       PROJECT_PATH: .\src\ChocoVersionSelect.csproj
       PUBLISH_PATH: .\src\bin\public\Release
-      ASSETS_PATH: .\build\chocolatey
+      ASSETS_PATH: .\build\chocolatey\ChocoVersionSelect
       NUSPEC_TARGET_PATH: .\src\bin\public\Release\ChocoVersionSelect.nuspec
 
     steps:
@@ -58,7 +58,7 @@ jobs:
     - name: Add Version File to Artifact
       shell: pwsh
       run : |
-        New-Item -Path ${{ github.workspace }}\${{ matrix.ChannelName }} -Name "version.txt" -ItemType "file" -Value "${{ env.GitBuildVersionSimple }}"
+        New-Item -Path ${{ github.workspace }}\${{ matrix.ChannelName }} -Name 'version.txt' -ItemType 'file' -Value "${{ env.GitBuildVersionSimple }}"
 
     - name: Build release ChocoVersionSelect
       run: |
@@ -69,12 +69,11 @@ jobs:
     - name: Gather chocolatey files
       shell: pwsh
       run: |
-        $packageAssetsPath = Join-Path $env.ASSETS_PATH $env.PROJECT_NAME
-        (Get-Content (Join-Path env.ASSETS_PATH publish.nuspec)) `
+        (Get-Content (Join-Path $env.ASSETS_PATH 'publish.nuspec')) `
         -replace "{version}", $env.NBGV_SemVer1 `
         -replace "{packageId}", $env.PROJECT_NAME |
         Set-Content $env.NUSPEC_TARGET_PATH
-        $toolsPath = Join-Path $env.PUBLISH_PATH tools
+        $toolsPath = Join-Path $env.PUBLISH_PATH 'tools'
         New-Item -Path $toolsPath -ItemType Directory
         Get-ChildItem -Path $packageAssetsPath -File -Filter *.ps1 |
         ForEach-Object { `
@@ -89,7 +88,7 @@ jobs:
     - name: Pack
       shell: pwsh
       run: |
-        $nupkgOutputPath = .\packages
+        $nupkgOutputPath = '.\packages'
         New-Item -Path $nupkgOutputPath -ItemType Directory
         choco pack $env.NUSPEC_TARGET_PATH --version $env.NBGV_SemVer1 --outputdirectory $nupkgOutputPath
         exit $?
