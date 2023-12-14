@@ -98,6 +98,6 @@ jobs:
         path: ${{ env.NUPKG_TARGET_PATH }}\*.nupkg
 
     - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ($Path -replace (${{ env.NUPKG_TARGET_PATH }}/*.nupkg) '\\','/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ($Path -replace (${{ env.NUPKG_TARGET_PATH }}/*.nupkg) '\\','/')
