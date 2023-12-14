@@ -74,14 +74,14 @@ jobs:
         Set-Content $env:NUSPEC_TARGET_PATH
         $toolsPath = Join-Path $env:PUBLISH_PATH 'tools'
         New-Item -Path $toolsPath -ItemType Directory
-        Get-ChildItem -Path $packageAssetsPath -File -Filter *.ps1 |
+        Get-ChildItem -Path $env:ASSETS_PATH -File -Filter *.ps1 |
         ForEach-Object { `
           (Get-Content $_.FullName) `
             -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
             -replace "{packageId}", $env:PROJECT_NAME |
             Set-Content (Join-Path $toolsPath $_.Name) `
         }
-        Copy-Item "$packageAssetsPath\*.ignore" $env:PUBLISH_PATH
+        Copy-Item "$env:ASSETS_PATH\*.ignore" $env:PUBLISH_PATH
         exit 0
 
     - name: Pack
@@ -96,3 +96,8 @@ jobs:
       with:
         name: chocolatey-package
         path: ${{ env.NUPKG_TARGET_PATH }}\*.nupkg
+
+    - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ($Path -replace (${{ env.NUPKG_TARGET_PATH }}/*.nupkg) '\\','/')
