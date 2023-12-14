@@ -13,6 +13,8 @@ jobs:
   Build_And_Package:
     name: Build and package
     runs-on: windows-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         ChannelName:

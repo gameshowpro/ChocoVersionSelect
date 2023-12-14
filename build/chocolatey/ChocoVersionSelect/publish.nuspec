@@ -14,6 +14,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="tools\**" target="tools" />
     <file src="**" target="binaries" />
   </files>
 </package>
