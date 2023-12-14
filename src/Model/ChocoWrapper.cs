@@ -25,7 +25,6 @@ internal record PackageVersionSet(PackageVersionSetType PackageVersionSetType, I
 internal class ChocoWrapper
 {
     private const string PublishedTag = "Published: ";
-    private const string DateFormat = "yyyy-MM-dd";
     private readonly static TimeSpan s_timeout = TimeSpan.FromSeconds(30);
     private readonly CancellationToken _cancellationToken;
     private readonly CommandLineArgs _args;
@@ -61,6 +60,7 @@ internal class ChocoWrapper
 
     public async Task GetVersionData()
     {
+        string dateFormat = CultureInfo.InstalledUICulture.DateTimeFormat.ShortDatePattern;
         UpdateWrapperState(WrapperState.Refreshing);
         PackageVersions = Channel.CreateUnbounded<PackageVersionSet>();
         PackageVersion? currentVersion = null;
@@ -105,7 +105,7 @@ internal class ChocoWrapper
                 int publishedPosition = line.LastIndexOf(PublishedTag);
                 if (publishedPosition >= 0)
                 {
-                    if (DateTimeOffset.TryParseExact(line[(publishedPosition + PublishedTag.Length)..], DateFormat, CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.AssumeUniversal, out DateTimeOffset publishDate))
+                    if (DateTimeOffset.TryParseExact(line[(publishedPosition + PublishedTag.Length)..], dateFormat, CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.AssumeUniversal, out DateTimeOffset publishDate))
                     {
                         bool isCurrent = currentVersion != null && pendingVersionNumber == currentVersion.Version;
                         PackageVersion packageVersion = new(pendingVersionNumber, isCurrent, previousWasCurrent, isLatest, currentSeenInSearch, publishDate);
