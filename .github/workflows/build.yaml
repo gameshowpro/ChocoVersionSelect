@@ -47,9 +47,7 @@ jobs:
     - name: Nerdbank.GitVersioning
       uses: dotnet/nbgv@v0.4.1
       with:
-        setCommonVars: true
-
-    - run: echo "BuildNumber - $env:GitBuildVersionSimple"
+        setAllVars: true
 
     - name: Create Directory for Channel
       shell: pwsh
@@ -70,7 +68,7 @@ jobs:
       shell: pwsh
       run: |
         (Get-Content (Join-Path $env:ASSETS_PATH 'publish.nuspec')) `
-        -replace "{version}", $env:NBGV_SemVer1 `
+        -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
         -replace "{packageId}", $env:PROJECT_NAME |
         Set-Content $env:NUSPEC_TARGET_PATH
         $toolsPath = Join-Path $env:PUBLISH_PATH 'tools'
@@ -78,7 +76,7 @@ jobs:
         Get-ChildItem -Path $packageAssetsPath -File -Filter *.ps1 |
         ForEach-Object { `
           (Get-Content $_.FullName) `
-            -replace "{version}", $env:NBGV_SemVer1 `
+            -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
             -replace "{packageId}", $env:PROJECT_NAME |
             Set-Content (Join-Path $toolsPath $_.Name) `
         }
@@ -91,7 +89,7 @@ jobs:
         $nupkgOutputPath = '.\packages'
         New-Item -Path $nupkgOutputPath -ItemType Directory
         choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_SemVer1 --outputdirectory $nupkgOutputPath
-        exit $?
+        exit ($? ? 0 Else 1)
 
     - name: Upload
       uses: actions/upload-artifact@v3
