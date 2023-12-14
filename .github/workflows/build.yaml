@@ -97,6 +97,11 @@ jobs:
         name: chocolatey-package
         path: ${{ env.NUPKG_TARGET_PATH }}\*.nupkg
 
+    - name: Run latest-tag
+      uses: EndBug/latest-tag@latest
+      with:
+        description: "v($env:GitBuildVersionSimple)"
+
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
