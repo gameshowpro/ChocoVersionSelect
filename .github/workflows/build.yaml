@@ -36,7 +36,7 @@ jobs:
       PUBLISH_PATH: .\src\bin\public\Release
       ASSETS_PATH: .\build\chocolatey\ChocoVersionSelect
       NUSPEC_TARGET_PATH: .\src\bin\public\Release\ChocoVersionSelect.nuspec
-      NUPKG_TARGET_PATH: .\packages
+      NUPKG_TARGET_PATH: ./packages
 
     steps:
     - uses: actions/checkout@v4
@@ -102,18 +102,16 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: chocolatey-package
-        path: ${{ env.NUPKG_TARGET_PATH }}\*.nupkg
+        path: ${{ env.NUPKG_TARGET_PATH }}/*.nupkg
 
     - name: Add tags
       id: addTags
-      uses: Actions-R-Us/actions-tagger@v2
-      with:
-        publish_latest_tag: true
-      if: ${{ github.event_name == 'Release' }}
+      shell: pwsh
+      run: |
+        nbgv tag
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.addTags.outputs.tag }}
-        files: ($Path -replace (${{ env.NUPKG_TARGET_PATH }}/*.nupkg) '\\','/')
-      if: ${{ github.event_name == 'Release' }}
+        files: ${{ env.NUPKG_TARGET_PATH }}/*.nupkg
