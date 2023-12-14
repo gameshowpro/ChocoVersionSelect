@@ -4,6 +4,11 @@ on:
       - main
     paths:
       - 'version.json'
+  
+  release:
+    types:
+      - released
+      - edited
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -100,12 +105,15 @@ jobs:
         path: ${{ env.NUPKG_TARGET_PATH }}\*.nupkg
 
     - name: Add tags
+      id: addTags
       uses: Actions-R-Us/actions-tagger@v2
       with:
         publish_latest_tag: true
+      if: ${{ github.event_name == 'Release' }}
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: "v($env:GitBuildVersionSimple)"
+        tag_name: ${{ steps.addTags.outputs.tag }}
         files: ($Path -replace (${{ env.NUPKG_TARGET_PATH }}/*.nupkg) '\\','/')
+      if: ${{ github.event_name == 'Release' }}
