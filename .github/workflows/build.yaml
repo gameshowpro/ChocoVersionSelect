@@ -29,6 +29,7 @@ jobs:
       PUBLISH_PATH: .\src\bin\public\Release
       ASSETS_PATH: .\build\chocolatey\ChocoVersionSelect
       NUSPEC_TARGET_PATH: .\src\bin\public\Release\ChocoVersionSelect.nuspec
+      NUPKG_TARGET_PATH: .\packages
 
     steps:
     - uses: actions/checkout@v4
@@ -42,7 +43,7 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0.x'
-        dotnet-quality: 'preview'
+        dotnet-quality: 'ga'
 
     - name: Nerdbank.GitVersioning
       uses: dotnet/nbgv@v0.4.1
@@ -86,13 +87,12 @@ jobs:
     - name: Pack
       shell: pwsh
       run: |
-        $nupkgOutputPath = '.\packages'
-        New-Item -Path $nupkgOutputPath -ItemType Directory
-        choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_SemVer1 --outputdirectory $nupkgOutputPath
+        New-Item -Path $env:NUPKG_TARGET_PATH -ItemType Directory
+        choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH
         exit ($? ? 0 : 1)
 
     - name: Upload
       uses: actions/upload-artifact@v3
       with:
         name: chocolatey-package
-        path: \*.nupkg
+        path: ${{ env.NUPKG_TARGET_PATH }}\*.nupkg
