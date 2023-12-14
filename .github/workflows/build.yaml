@@ -104,7 +104,7 @@ jobs:
       shell: pwsh
       run: |
         nbgv tag 
-        git push origin "v{env$.NBGV_ChocolateyPackageVersion}"
+        git push origin "v{$env:NBGV_ChocolateyPackageVersion}"
 
     - name: Release
       uses: softprops/action-gh-release@v1
