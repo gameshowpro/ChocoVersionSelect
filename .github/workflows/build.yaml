@@ -4,11 +4,6 @@ on:
       - main
     paths:
       - 'version.json'
-  
-  release:
-    types:
-      - released
-      - edited
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -108,10 +103,11 @@ jobs:
       id: addTags
       shell: pwsh
       run: |
-        nbgv tag
+        nbgv tag 
+        git push origin "v{env$.NBGV_ChocolateyPackageVersion}"
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ steps.addTags.outputs.tag }}
+        tag_name: v${{ env.NBGV_ChocolateyPackageVersion }}
         files: ${{ env.NUPKG_TARGET_PATH }}/*.nupkg
