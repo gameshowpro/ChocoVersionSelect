@@ -95,7 +95,8 @@ jobs:
         choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH
         if ($?)
         {
-          Write-Output "PACKAGE_PATH=@(Get-ChildItem -Filter "$env:NUSPEC_TARGET_PATH\*.nupkg")[0].FullName" >> $env:GITHUB_OUTPUT
+          var packagePath = @(Get-ChildItem -Filter "$env:NUSPEC_TARGET_PATH\*.nupkg")
+          Write-Output "PACKAGE_PATH=$packagePath" >> $env:GITHUB_OUTPUT
           exit 0
         }
         else
