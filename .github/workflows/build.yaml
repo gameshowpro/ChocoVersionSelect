@@ -96,11 +96,11 @@ jobs:
         if ($?)
         {
           Write-Output "PACKAGE_PATH=@(Get-ChildItem -Filter "$env:NUSPEC_TARGET_PATH\*.nupkg")[0].FullName" >> $env:GITHUB_OUTPUT
-          exit 1
+          exit 0
         }
         else
         {
-          exit 0
+          exit 1
         }
 
     - name: Upload
