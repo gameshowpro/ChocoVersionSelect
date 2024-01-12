@@ -1,4 +1,6 @@
-﻿MIT License
+﻿From: https://github.com/gameshowpro/ChocoVersionSelect/blob/main/LICENSE
+
+MIT License
 
 Copyright (c) 2024 Barjonas LLC
 

@@ -1,0 +1,7 @@
+﻿VERIFICATION
+Verification is intended to assist the Chocolatey moderators and community
+in verifying that this package's contents are trustworthy.
+
+Source code, official releases, and build workflow are host at https://github.com/gameshowpro/ChocoVersionSelect
+This package was built as part of the a GitHub action in that repository. All binaries are embedded in the package. 
+No other files are downloaded or copied during installation.

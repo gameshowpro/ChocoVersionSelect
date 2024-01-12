@@ -6,11 +6,16 @@
     <title>ChocoVersionSelect</title>
     <authors>Hamish Barjonas</authors>
     <owners>Hamish Barjonas</owners>
-    <tags>Chocolatey Upgrade Downgrade</tags>
-    <summary>User-friendly application to allow easy upgrading and downgrading of a single package.</summary>
-    <description>ChocoVersionSelect Windows Desktop applicatioon</description>
+    <copyright>Barjonas LLC 2024</copyright>
+    <licenseUrl>https://github.com/gameshowpro/ChocoVersionSelect/blob/main/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/gameshowpro/ChocoVersionSelect</projectUrl>
+    <packageSourceUrl>https://github.com/gameshowpro/ChocoVersionSelect</packageSourceUrl>
+    <iconUrl>https://www.barjonas.com/assets/img/ChocoVersionSelect.png</iconUrl>
+    <tags>Chocolatey Upgrade Downgrade GUI</tags>
+    <summary>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package.</summary>
+    <description>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package. Not part of the official Chocolatey project.</description>
     <dependencies>
-      <dependency id="dotnet-8.0-desktopruntime" version="8.0.0" />
+      <dependency id="dotnet-8.0-desktopruntime" version="8.0.1" />
     </dependencies>
   </metadata>
   <files>

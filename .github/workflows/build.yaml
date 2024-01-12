@@ -71,33 +71,43 @@ jobs:
       shell: pwsh
       run: |
         (Get-Content (Join-Path $env:ASSETS_PATH 'publish.nuspec')) `
-        -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
-        -replace "{packageId}", $env:PROJECT_NAME |
-        Set-Content $env:NUSPEC_TARGET_PATH
+          -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
+          -replace "{packageId}", $env:PROJECT_NAME
+            | Set-Content $env:NUSPEC_TARGET_PATH
         $toolsPath = Join-Path $env:PUBLISH_PATH 'tools'
         New-Item -Path $toolsPath -ItemType Directory
-        Get-ChildItem -Path $env:ASSETS_PATH -File -Filter *.ps1 |
-        ForEach-Object { `
-          (Get-Content $_.FullName) `
-            -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
-            -replace "{packageId}", $env:PROJECT_NAME |
-            Set-Content (Join-Path $toolsPath $_.Name) `
-        }
-        Copy-Item "$env:ASSETS_PATH\*.ignore" $env:PUBLISH_PATH
+        Get-ChildItem -Path $env:ASSETS_PATH -File -Filter *.ps1
+          | ForEach-Object { `
+              (Get-Content $_.FullName) `
+                -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
+                -replace "{packageId}", $env:PROJECT_NAME |
+                Set-Content (Join-Path $toolsPath $_.Name) `
+            }
+        Get-ChildItem -Path "$env:ASSETS_PATH\*" -Include "*.ignore", "*.txt" 
+          | Copy-Item -Destination $env:PUBLISH_PATH
         exit 0
 
     - name: Pack
+      id: pack
       shell: pwsh
       run: |
         New-Item -Path $env:NUPKG_TARGET_PATH -ItemType Directory
         choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH
-        exit ($? ? 0 : 1)
+        if ($?)
+        {
+          Write-Output "PACKAGE_PATH=@(Get-ChildItem -Filter "$env:NUSPEC_TARGET_PATH\*.nupkg")[0].FullName" >> $env:GITHUB_OUTPUT
+          exit 1
+        }
+        else
+        {
+          exit 0
+        }
 
     - name: Upload
       uses: actions/upload-artifact@v3
       with:
         name: chocolatey-package
-        path: ${{ env.NUPKG_TARGET_PATH }}/*.nupkg
+        path: ${{ steps.pack.outputs.PACKAGE_PATH }}
 
     - name: Add tags
       id: addTags
@@ -110,4 +120,13 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ env.NBGV_ChocolateyPackageVersion }}
-        files: ${{ env.NUPKG_TARGET_PATH }}/*.nupkg
+        files: ${{ steps.pack.outputs.PACKAGE_PATH }}
+
+    - name: Push to Chocolatey Community
+      if: env.NBGV_PrereleaseVersion == ''
+      shell: pwsh
+      env:
+        API_KEY: ${{ secrets.CHOCO_API_KEY }}
+      run: |
+        choco apiKey -k "$env:API_KEY" -source https://push.chocolatey.org/
+        choco push ${{ steps.pack.outputs.PACKAGE_PATH }} --source https://push.chocolatey.org/
