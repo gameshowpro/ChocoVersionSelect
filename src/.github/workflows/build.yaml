@@ -28,10 +28,9 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       PROJECT_NAME: ChocoVersionSelect
       PROJECT_PATH: .\src\ChocoVersionSelect.csproj
+      PUBLISH_PATH: .\src\bin\public\Release
       ASSETS_PATH: .\build\chocolatey\ChocoVersionSelect
-      BINARIES_PATH: .\src\bin\public\binaries
-      TOOLS_PATH: .\src\bin\public\tools
-      NUSPEC_TARGET_PATH: .\src\bin\public\ChocoVersionSelect.nuspec
+      NUSPEC_TARGET_PATH: .\src\bin\public\Release\ChocoVersionSelect.nuspec
       NUPKG_TARGET_PATH: ./packages
 
     steps:
@@ -65,31 +64,27 @@ jobs:
     - name: Build release ChocoVersionSelect
       run: |
         dotnet restore $env:PROJECT_PATH
-        dotnet publish $env:PROJECT_PATH -c $env:BuildConfiguration --output $env:BINARIES_PATH
+        dotnet publish $env:PROJECT_PATH -c $env:BuildConfiguration --output $env:PUBLISH_PATH
       if:  ${{ success() && matrix.ChannelName  == 'Release' }}
     
     - name: Gather chocolatey files
       shell: pwsh
       run: |
-        # copy nuspec to target path, replacing tokens
         (Get-Content (Join-Path $env:ASSETS_PATH 'publish.nuspec')) `
           -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
           -replace "{packageId}", $env:PROJECT_NAME
             | Set-Content $env:NUSPEC_TARGET_PATH
-        
-        # copy scripts to tools directory, replacing tokens
-        New-Item -Path TOOLS_PATH -ItemType Directory
+        $toolsPath = Join-Path $env:PUBLISH_PATH 'tools'
+        New-Item -Path $toolsPath -ItemType Directory
         Get-ChildItem -Path $env:ASSETS_PATH -File -Filter *.ps1
           | ForEach-Object { `
               (Get-Content $_.FullName) `
                 -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
                 -replace "{packageId}", $env:PROJECT_NAME |
-                Set-Content (Join-Path TOOLS_PATH $_.Name) `
+                Set-Content (Join-Path $toolsPath $_.Name) `
             }
-        
-        # copy text files and ignore to binaries path
         Get-ChildItem -Path "$env:ASSETS_PATH\*" -Include "*.ignore", "*.txt" 
-          | Copy-Item -Destination $env:BINARIES_PATH
+          | Copy-Item -Destination $env:PUBLISH_PATH
         exit 0
 
     - name: Pack

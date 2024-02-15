@@ -10,7 +10,7 @@
     <licenseUrl>https://github.com/gameshowpro/ChocoVersionSelect/blob/main/LICENSE</licenseUrl>
     <projectUrl>https://github.com/gameshowpro/ChocoVersionSelect</projectUrl>
     <packageSourceUrl>https://github.com/gameshowpro/ChocoVersionSelect</packageSourceUrl>
-    <iconUrl>https://www.barjonas.com/assets/img/ChocoVersionSelect.png</iconUrl>
+    <iconUrl>https://rawcdn.githack.com/gameshowpro/ChocoVersionSelect/v1.0.2/resources/icon/light.png</iconUrl>
     <tags>Chocolatey Upgrade Downgrade GUI</tags>
     <summary>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package.</summary>
     <description>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package. Not part of the official Chocolatey project.</description>
@@ -20,6 +20,6 @@
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
-    <file src="**" target="binaries" />
+    <file src="binaries\**" target="binaries" />
   </files>
 </package>
