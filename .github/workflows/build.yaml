@@ -94,8 +94,7 @@ jobs:
       id: pack
       shell: pwsh
       run: |
-        Set-Location $env:PACKAGE_ASSEMBLE_PATH
-        Get-ChildItem -Recurse
+        Get-ChildItem -Recurse -Path $env:PACKAGE_ASSEMBLE_PATH
         New-Item -Path $env:NUPKG_TARGET_PATH -ItemType Directory
         choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH
         if ($?)
