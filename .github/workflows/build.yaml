@@ -29,7 +29,7 @@ jobs:
       PROJECT_NAME: ChocoVersionSelect
       PROJECT_PATH: .\src\ChocoVersionSelect.csproj
       ASSETS_PATH: .\build\chocolatey\ChocoVersionSelect
-      PACKAGE_PATH: .\package
+      PACKAGE_ASSEMBLE_PATH: .\package
       BINARIES_PATH: .\package\binaries
       TOOLS_PATH: .\package\tools
       NUSPEC_TARGET_PATH: .\package\ChocoVersionSelect.nuspec
@@ -76,13 +76,13 @@ jobs:
             | Set-Content $env:NUSPEC_TARGET_PATH
         
         # copy scripts to tools directory, replacing tokens
-        New-Item -Path TOOLS_PATH -ItemType Directory
+        New-Item -Path $env:TOOLS_PATH -ItemType Directory
         Get-ChildItem -Path $env:ASSETS_PATH -File -Filter *.ps1
           | ForEach-Object { `
               (Get-Content $_.FullName) `
                 -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
                 -replace "{packageId}", $env:PROJECT_NAME |
-                Set-Content (Join-Path TOOLS_PATH $_.Name) `
+                Set-Content (Join-Path $env:TOOLS_PATH $_.Name) `
             }
         
         # copy text files and ignore to binaries path
@@ -94,7 +94,7 @@ jobs:
       id: pack
       shell: pwsh
       run: |
-        Set-Location $env:PACKAGEPATH
+        Set-Location $env:PACKAGE_ASSEMBLE_PATH
         Get-ChildItem -Recurse
         New-Item -Path $env:NUPKG_TARGET_PATH -ItemType Directory
         choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH
