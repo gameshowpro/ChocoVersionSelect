@@ -29,10 +29,11 @@ jobs:
       PROJECT_NAME: ChocoVersionSelect
       PROJECT_PATH: .\src\ChocoVersionSelect.csproj
       ASSETS_PATH: .\build\chocolatey\ChocoVersionSelect
-      BINARIES_PATH: .\src\bin\public\binaries
-      TOOLS_PATH: .\src\bin\public\tools
-      NUSPEC_TARGET_PATH: .\src\bin\public\ChocoVersionSelect.nuspec
-      NUPKG_TARGET_PATH: ./packages
+      PACKAGE_PATH: .\package
+      BINARIES_PATH: .\package\binaries
+      TOOLS_PATH: .\package\tools
+      NUSPEC_TARGET_PATH: .\package\ChocoVersionSelect.nuspec
+      NUPKG_TARGET_PATH: .\packages
 
     steps:
     - uses: actions/checkout@v4
@@ -96,6 +97,8 @@ jobs:
       id: pack
       shell: pwsh
       run: |
+        Set-Location $env:PACKAGEPATH
+        Get-ChildItem -Recurse
         New-Item -Path $env:NUPKG_TARGET_PATH -ItemType Directory
         choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH
         if ($?)
