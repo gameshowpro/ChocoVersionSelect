@@ -40,11 +40,8 @@ jobs:
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
-    - name: setup-msbuild
-      uses: microsoft/setup-msbuild@v1
-
     - name: Use .NET 8.0.x
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
         dotnet-quality: 'ga'
@@ -115,7 +112,7 @@ jobs:
         }
 
     - name: Upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: chocolatey-package
         path: ${{ steps.pack.outputs.PACKAGE_PATH }}
