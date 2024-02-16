@@ -1,6 +1,6 @@
 ﻿# ChocoVersionSelect
 
-<img src="./resources/icon/icon.svg" align="right" alt="ChocoVersionSelect icon" />
+<img src="./resources/icon/icon.svg" align="left" alt="ChocoVersionSelect icon" width="64px" />
 
 ChocoVersionSelect is a Windows user interface for [Chocolatey](https://chocolatey.org) (the Machine Package Manager for Windows). Unlike [ChocolateyGUI](https://github.com/chocolatey/ChocolateyGUI), which has a broad set of features, ChocoVersionSelect is focused on managing t	he local installation of a *single package*. It does this by wrapping choco's `list`, `search`, and `upgrade` verbs.
 ## Usage
