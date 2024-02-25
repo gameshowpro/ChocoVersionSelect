@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>chocoversionselect</id>
-    <version>{version}</version>
+    <id>$packageId$</id>
+    <version>$version$</version>
     <title>ChocoVersionSelect</title>
     <authors>Hamish Barjonas</authors>
     <owners>Hamish Barjonas</owners>
@@ -10,8 +10,10 @@
     <licenseUrl>https://github.com/gameshowpro/ChocoVersionSelect/blob/main/LICENSE</licenseUrl>
     <projectUrl>https://github.com/gameshowpro/ChocoVersionSelect</projectUrl>
     <packageSourceUrl>https://github.com/gameshowpro/ChocoVersionSelect</packageSourceUrl>
+    <releaseNotes>https://github.com/gameshowpro/ChocoVersionSelect/releases/tag/v$version$</releaseNotes>
+    <projectSourceUrl>https://github.com/gameshowpro/ChocoVersionSelect/tree/v$version$</projectSourceUrl>
     <iconUrl>https://rawcdn.githack.com/gameshowpro/ChocoVersionSelect/v1.0.1/resources/icon/light.png</iconUrl>
-    <tags>Chocolatey Upgrade Downgrade GUI</tags>
+    <tags>Upgrade Downgrade GUI Utility</tags>
     <summary>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package.</summary>
     <description>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package. Not part of the official Chocolatey project.</description>
     <dependencies>

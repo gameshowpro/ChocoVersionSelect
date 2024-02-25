@@ -43,8 +43,8 @@ jobs:
     - name: Use .NET 8.0.x
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.200' #Temp to avoid 404 error with 8.0.201
-        # dotnet-quality: 'ga'
+        dotnet-version: '8.0.x'
+        dotnet-quality: 'ga'
 
     - name: Nerdbank.GitVersioning
       uses: dotnet/nbgv@v0.4.1
@@ -71,8 +71,8 @@ jobs:
       run: |
         # copy nuspec to target path, replacing tokens
         (Get-Content (Join-Path $env:ASSETS_PATH 'publish.nuspec')) `
-          -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
-          -replace "{packageId}", $env:PROJECT_NAME
+          -replace "$version$", $env:NBGV_ChocolateyPackageVersion `
+          -replace "$packageId$", $env:PROJECT_NAME
             | Set-Content $env:NUSPEC_TARGET_PATH
         
         # copy scripts to tools directory, replacing tokens
@@ -80,8 +80,8 @@ jobs:
         Get-ChildItem -Path $env:ASSETS_PATH -File -Filter *.ps1
           | ForEach-Object { `
               (Get-Content $_.FullName) `
-                -replace "{version}", $env:NBGV_ChocolateyPackageVersion `
-                -replace "{packageId}", $env:PROJECT_NAME |
+                -replace "$version$", $env:NBGV_ChocolateyPackageVersion `
+                -replace "$packageId$", $env:PROJECT_NAME |
                 Set-Content (Join-Path $env:TOOLS_PATH $_.Name) `
             }
         

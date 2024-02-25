@@ -1,1 +1,1 @@
-﻿Get-Process -Name "ChocoVersionSelect" -ErrorAction Ignore | Foreach-Object { $_.CloseMainWindow() | Out-Null }
+﻿Get-Process -Name "$packageId$" -ErrorAction Ignore | Foreach-Object { $_.CloseMainWindow() | Out-Null }
