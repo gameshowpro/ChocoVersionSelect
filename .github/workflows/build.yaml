@@ -71,8 +71,8 @@ jobs:
       run: |
         # copy nuspec to target path, replacing tokens
         (Get-Content (Join-Path $env:ASSETS_PATH 'publish.nuspec')) `
-          -replace "$version$", $env:NBGV_ChocolateyPackageVersion `
-          -replace "$packageId$", $env:PROJECT_NAME
+          -replace '$version$', $env:NBGV_ChocolateyPackageVersion `
+          -replace '$packageId$', $env:PROJECT_NAME
             | Set-Content $env:NUSPEC_TARGET_PATH
         
         # copy scripts to tools directory, replacing tokens
@@ -80,8 +80,8 @@ jobs:
         Get-ChildItem -Path $env:ASSETS_PATH -File -Filter *.ps1
           | ForEach-Object { `
               (Get-Content $_.FullName) `
-                -replace "$version$", $env:NBGV_ChocolateyPackageVersion `
-                -replace "$packageId$", $env:PROJECT_NAME |
+                -replace '$version$', $env:NBGV_ChocolateyPackageVersion `
+                -replace '$packageId$', $env:PROJECT_NAME |
                 Set-Content (Join-Path $env:TOOLS_PATH $_.Name) `
             }
         
