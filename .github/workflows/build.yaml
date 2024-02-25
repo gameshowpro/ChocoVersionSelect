@@ -70,18 +70,15 @@ jobs:
       shell: pwsh
       run: |
         # copy nuspec to target path, replacing tokens
-        (Get-Content (Join-Path $env:ASSETS_PATH 'publish.nuspec')) `
-          -replace '$version$', $env:NBGV_ChocolateyPackageVersion `
-          -replace '$packageId$', $env:PROJECT_NAME `
-            | Set-Content $env:NUSPEC_TARGET_PATH
+        Copy-Item (Join-Path $env:ASSETS_PATH 'publish.nuspec') -Destination $env:NUSPEC_TARGET_PATH
         
         # copy scripts to tools directory, replacing tokens
         New-Item -Path $env:TOOLS_PATH -ItemType Directory
         Get-ChildItem -Path $env:ASSETS_PATH -File -Filter *.ps1
           | ForEach-Object { `
               (Get-Content $_.FullName) `
-                -replace '$version$', $env:NBGV_ChocolateyPackageVersion `
-                -replace '$packageId$', $env:PROJECT_NAME `
+                -replace '\$version\$', $env:NBGV_ChocolateyPackageVersion `
+                -replace '\$packageId\$', $env:PROJECT_NAME `
                   | Set-Content (Join-Path $env:TOOLS_PATH $_.Name) `
             }
         
@@ -97,7 +94,7 @@ jobs:
         Get-ChildItem -Recurse -Path $env:PACKAGE_ASSEMBLE_PATH
         Write-Host (Get-Content $env:NUSPEC_TARGET_PATH)
         New-Item -Path $env:NUPKG_TARGET_PATH -ItemType Directory
-        choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH
+        choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH version=$env:NBGV_ChocolateyPackageVersion packageId=$env:PROJECT_NAME
         if ($?)
         {
           $packagePath = (Get-ChildItem -Filter "$env:NUPKG_TARGET_PATH\*.nupkg" | Select-Object -First 1).FullName
