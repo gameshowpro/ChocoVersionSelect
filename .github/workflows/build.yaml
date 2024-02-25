@@ -91,8 +91,7 @@ jobs:
       id: pack
       shell: pwsh
       run: |
-        Get-ChildItem -Recurse -Path $env:PACKAGE_ASSEMBLE_PATH
-        Write-Host (Get-Content $env:NUSPEC_TARGET_PATH)
+        # Get-ChildItem -Recurse -Path $env:PACKAGE_ASSEMBLE_PATH
         New-Item -Path $env:NUPKG_TARGET_PATH -ItemType Directory
         choco pack $env:NUSPEC_TARGET_PATH --version $env:NBGV_ChocolateyPackageVersion --outputdirectory $env:NUPKG_TARGET_PATH version=$env:NBGV_ChocolateyPackageVersion packageId=$env:PROJECT_NAME
         if ($?)
