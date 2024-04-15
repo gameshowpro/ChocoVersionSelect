@@ -82,9 +82,21 @@ jobs:
                   | Set-Content (Join-Path $env:TOOLS_PATH $_.Name) `
             }
         
+        # Append hashes to VERIFICATION.txt before copying to binaries path. Doing it here avoids generating a hash for the text file itself.
+        $verificationFilePath = (Join-Path $env:ASSETS_PATH 'VERIFICATION.txt')
+        $files = Get-ChildItem -Path $env:BINARIES_PATH -Recurse -File
+        Add-Content -Path $verificationFilePath -Value "`nchecksum type: sha256"
+        foreach ($file in $files) {
+            $checksum = Get-FileHash -Path $file.FullName -Algorithm SHA256 | Select-Object -ExpandProperty Hash
+            $relativePath = Resolve-Path -Path $file.FullName -RelativeBasePath $env:BINARIES_PATH -Relative
+            Add-Content -Path $verificationFilePath -Value "`nfile: $relativePath`nchecksum: $checksum"
+        }
+
         # copy text files and ignore to binaries path
         Get-ChildItem -Path "$env:ASSETS_PATH\*" -Include "*.ignore", "*.txt" 
           | Copy-Item -Destination $env:BINARIES_PATH
+ 
+
         exit 0
 
     - name: Pack
