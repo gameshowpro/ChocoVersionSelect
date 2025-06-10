@@ -9,7 +9,6 @@
     <copyright>Barjonas LLC 2024</copyright>
     <licenseUrl>https://github.com/gameshowpro/ChocoVersionSelect/blob/main/LICENSE</licenseUrl>
     <projectUrl>https://github.com/gameshowpro/ChocoVersionSelect</projectUrl>
-    <packageSourceUrl>https://github.com/gameshowpro/ChocoVersionSelect</packageSourceUrl>
     <releaseNotes>https://github.com/gameshowpro/ChocoVersionSelect/releases/tag/v$version$</releaseNotes>
     <projectSourceUrl>https://github.com/gameshowpro/ChocoVersionSelect/tree/v$version$</projectSourceUrl>
     <iconUrl>https://rawcdn.githack.com/gameshowpro/ChocoVersionSelect/v1.0.1/resources/icon/light.png</iconUrl>
@@ -17,7 +16,7 @@
     <summary>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package.</summary>
     <description>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package. Not part of the official Chocolatey project.</description>
     <dependencies>
-      <dependency id="dotnet-8.0-desktopruntime" version="8.0.1" />
+      <dependency id="dotnet-8.0-desktopruntime" version="8.0.8" />
     </dependencies>
   </metadata>
   <files>
