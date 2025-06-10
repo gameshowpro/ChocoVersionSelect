@@ -9,6 +9,7 @@
     <ApplicationIcon>Themes\Dark.ico</ApplicationIcon>
     <SelfContained>false</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

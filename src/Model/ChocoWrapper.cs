@@ -142,7 +142,7 @@ internal class ChocoWrapper
 
         UpdateWrapperState(WrapperState.Idle);
         return result == 0;
-        void ProcessUpgrade(string line)
+        static void ProcessUpgrade(string line)
         {
 
         }

@@ -8,7 +8,7 @@ public class Sys : INotifyPropertyChanged
     private readonly CancellationToken _cancellationToken;
     private readonly Dispatcher _dispatcher;
 
-    public DateTimeOffset TestDate { get => DateTimeOffset.Now; }
+    public static DateTimeOffset TestDate { get => DateTimeOffset.Now; }
 
     internal Sys(CommandLineArgs args, CancellationToken cancellationToken)
     {
