@@ -2,7 +2,7 @@
   "profiles": {
     "ChocoVersionSelect": {
       "commandName": "Project",
-      "commandLineArgs": "Fremantle.FamilyFeud.Control --source=FamilyFeud"
+      "commandLineArgs": "Chocolatey --source=chocolatey"
     },
     "No args": {
       "commandName": "Project"
