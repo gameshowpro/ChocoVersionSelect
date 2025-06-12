@@ -90,7 +90,7 @@ internal class ChocoWrapper
             {
                 pendingVersionNumber = null;
             }
-            else if (line.StartsWith(_args.PackageName))
+            else if (line.StartsWith(_args.PackageName, StringComparison.InvariantCultureIgnoreCase))
             {
                 int versionStart = _args.PackageName.Length + 1;
                 int versionEnd = line.IndexOf(' ', versionStart);
@@ -108,7 +108,7 @@ internal class ChocoWrapper
                     if (DateTimeOffset.TryParseExact(line[(publishedPosition + PublishedTag.Length)..], dateFormat, CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.AssumeUniversal, out DateTimeOffset publishDate))
                     {
                         bool isCurrent = currentVersion != null && pendingVersionNumber == currentVersion.Version;
-                        PackageVersion packageVersion = new(pendingVersionNumber, isCurrent, previousWasCurrent, isLatest, currentSeenInSearch, publishDate);
+                        PackageVersion packageVersion = new(pendingVersionNumber, isCurrent, previousWasCurrent, isLatest, currentSeenInSearch, publishDate.Year < 1980 ? null : publishDate);
                         currentSeenInSearch = currentSeenInSearch || isCurrent;
                         AddPackage(packageVersion);
                         previousWasCurrent = isCurrent;
