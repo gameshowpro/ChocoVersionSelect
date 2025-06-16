@@ -6,11 +6,12 @@
     <title>ChocoVersionSelect</title>
     <authors>Hamish Barjonas</authors>
     <owners>Hamish Barjonas</owners>
-    <copyright>Barjonas LLC 2024</copyright>
+    <copyright>Barjonas LLC 2025</copyright>
     <licenseUrl>https://github.com/gameshowpro/ChocoVersionSelect/blob/main/LICENSE</licenseUrl>
     <projectUrl>https://github.com/gameshowpro/ChocoVersionSelect</projectUrl>
     <releaseNotes>https://github.com/gameshowpro/ChocoVersionSelect/releases/tag/v$version$</releaseNotes>
     <projectSourceUrl>https://github.com/gameshowpro/ChocoVersionSelect/tree/v$version$</projectSourceUrl>
+    <packageSourceUrl>https://github.com/gameshowpro/ChocoVersionSelect/tree/v$version$</packageSourceUrl>
     <iconUrl>https://rawcdn.githack.com/gameshowpro/ChocoVersionSelect/v$version$/resources/icon/light.png</iconUrl>
     <tags>Upgrade Downgrade GUI Utility</tags>
     <summary>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package.</summary>
