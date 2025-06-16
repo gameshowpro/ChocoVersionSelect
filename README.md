@@ -35,9 +35,9 @@ To end-user scenarios are envisaged:
 ## Why does this exist?
 ChocoVersionSelect was created to address a specific use-case. Some users who are not comfortable using a command shell. Some users would be confused or endangered by the wide array of features in [Chocolatey GUI](https://github.com/chocolatey/ChocolateyGUI). ChocoVersionSelect lets them achieve all the package management they need with a minimal learning curve.
 ## Dependencies
-ChocoVersionSelect does not have any build-time dependencies outside of the .NET 8.0 SDK. It won't do anything useful unless you already have [Chocolatey](https://chocolatey.org) installed and it can find choco.exe on the Windows [path](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/path).
+ChocoVersionSelect does not have any build-time dependencies outside of the .NET 9.0 SDK. It won't do anything useful unless you already have [Chocolatey](https://chocolatey.org) installed and it can find choco.exe on the Windows [path](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/path).
 ## Source code notes
-At the time of writing, this project was built for the lastest .NET Runtime (8.0) and C# (12.0). The UI is built with WPF using MVVM patterns.
+At the time of writing, this project was built for the lastest .NET Runtime (9.0) and C# (12.0). The UI is built with WPF using MVVM patterns.
 
 Since this application is quite limited in size and scope, it could serve as a good example for developers looking for a working example of some recent .NET features:
 - Immutability
