@@ -11,12 +11,12 @@
     <projectUrl>https://github.com/gameshowpro/ChocoVersionSelect</projectUrl>
     <releaseNotes>https://github.com/gameshowpro/ChocoVersionSelect/releases/tag/v$version$</releaseNotes>
     <projectSourceUrl>https://github.com/gameshowpro/ChocoVersionSelect/tree/v$version$</projectSourceUrl>
-    <iconUrl>https://rawcdn.githack.com/gameshowpro/ChocoVersionSelect/v1.0.1/resources/icon/light.png</iconUrl>
+    <iconUrl>https://rawcdn.githack.com/gameshowpro/ChocoVersionSelect/v$version$/resources/icon/light.png</iconUrl>
     <tags>Upgrade Downgrade GUI Utility</tags>
     <summary>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package.</summary>
     <description>User-friendly graphical application to allow easy upgrading and downgrading of a single Chocolatey package. Not part of the official Chocolatey project.</description>
     <dependencies>
-      <dependency id="dotnet-8.0-desktopruntime" version="8.0.8" />
+      <dependency id="dotnet-9.0-desktopruntime" version="9.0.5" />
     </dependencies>
   </metadata>
   <files>
